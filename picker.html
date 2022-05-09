@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <script src="./jquery.csv.js"></script>
+  <script>
+    function populateNames() {
+      $.ajax({url: "./data.csv", success: function(data){
+        people = $.csv.toObjects(data);
+        var namesHtml = '';
+        people.forEach(person => {
+          var id = 0;
+          for(let i = 0; i < person.points; i++) {
+              var randomColor = Math.floor(Math.random()*16777215).toString(16);
+              namesHtml += '<p class="name" style="background-color: #' + randomColor + '" id="' + id + '"><br>' + person.name + '</p>';
+              id++;
+            }
+        });
+        $("#names").html(namesHtml);
+      }});
+    }
+
+
+    function startRemoving() {
+      var slowlyEmptyArray = setInterval(removeRandomElement, 25);
+      
+      function removeRandomElement() {
+        let toRemove = Math.floor((Math.random() * $(".name").length));
+        $(".name")[toRemove].remove(); 
+        
+        if($(".name").length == 1 ){
+          clearInterval(slowlyEmptyArray);
+        }
+        console.log($(".name").length);
+      }
+    }
+    
+  </script>
+  <style>
+    body {
+      background: linear-gradient(104.25deg, #205072 -30.16%, #329D9C 119.77%);
+      font-family: sans-serif;
+    }
+    
+    h1 {
+      text-align: center;
+      color: whitesmoke;
+      font-size: 72px;
+    }
+    
+    .button-div {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    button {
+      width: 200px;
+      height: 75px;
+      border-radius: 15px;
+      font-size: 32px;
+    }
+    
+    #names {
+      width: 90%;
+      height: 750px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin: 0px auto;
+    }
+    
+    .name {
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      text-align: center;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      flex-flow: row;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body onload="populateNames()">
+  <h1>TigerHacks Raffle</h1>
+  <div class="button-div">
+    <button onclick="startRemoving()">Start Raffle</button>
+  </div>
+  <div id="names"></div>
+</body>
+</html>
